@@ -17,14 +17,11 @@
     <button type="submit">Tạo file kết quả</button>
   </form>
 
-  <div id="result" style="margin-top:20px;"></div>
-
   <script>
     document.getElementById("pdf-form").onsubmit = async function (e) {
       e.preventDefault();
       try {
-        const form = e.target;
-        const formData = new FormData(form);
+        const formData = new FormData(e.target);
 
         const res = await fetch("https://tao-so-tan-backend.onrender.com/upload", {
           method: "POST",
@@ -37,21 +34,12 @@
           const blob = await res.blob();
           const url = URL.createObjectURL(blob);
 
-          // Mở tab mới để xem trước
+          // Chỉ mở file PDF ở tab mới — không tạo nút
           window.open(url, "_blank");
-
-          // Thêm nút tải
-          const a = document.createElement("a");
-          a.href = url;
-          a.download = "ket_qua.pdf";
-          a.textContent = "Tải file kết quả";
-          document.getElementById("result").innerHTML = "";
-          document.getElementById("result").appendChild(a);
         } else {
-          alert("Lỗi khi gửi file: " + res.status);
+          alert("Lỗi: " + res.status);
         }
       } catch (err) {
-        console.error("LỖI GẶP PHẢI:", err);
         alert("Lỗi JS: " + err.message);
       }
     };
